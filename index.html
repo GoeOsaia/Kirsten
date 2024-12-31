@@ -169,7 +169,13 @@
 <body>
 
 <div id="book-container">
-  <!-- Cover Section -->
+ <!-- Lock Overlay with Countdown -->
+<div id="lock-overlay" style="display: flex; justify-content: center; align-items: center; flex-direction: column; background: rgba(0, 0, 0, 0.7); color: white; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; text-align: center;">
+  <h1 style="margin: 0; font-size: 2.5em;">Locked</h1>
+  <p style="margin: 10px 0; font-size: 1.2em;">Baby the book will be available in:</p>
+  <div id="countdown" style="font-size: 2em; font-weight: bold;">Loading...</div>
+</div>
+ <!-- Cover Section -->
   <div id="cover">
     <h1>Super Love</h1>
     <h3>The Chapters of Us</h3>
@@ -589,7 +595,7 @@ It wasn’t long before their conversations went beyond the game. Kirsten messag
   <div class="chapter" id="chapter-16">
       <h2>Chapter 16: The Super Wedding (Ft. Bailey The Ring Bearer)</h2>
 
-<p>The big day had finally arrived. Geo stood at the altar, sweating,not from nerves, but because his superhero suit underneath his tux was itchy.</p>
+<p>The big day had finally arrived. Geo stood at the altar, sweating , not from nerves, but because his superhero suit underneath his tux was itchy.</p>
 
 <p>The garden was beautiful, decorated with fairy lights and flowers, but the real star of the show was Bailey, the ring bearer.</p>
 
@@ -717,6 +723,48 @@ It wasn’t long before their conversations went beyond the game. Kirsten messag
     const chapters = document.querySelectorAll('.chapter');
     const navButtons = document.getElementById('nav-buttons');
     const cover = document.getElementById('cover');
+
+// Lock functionality with countdown
+window.onload = function () {
+  const lockOverlay = document.getElementById('lock-overlay');
+  const bookContainer = document.getElementById('book-container');
+  const countdown = document.getElementById('countdown');
+
+  // Target date and time: January 1, 2025, 12:00 AM
+  const unlockDate = new Date('2025-01-01T00:00:00').getTime();
+
+  // Update countdown timer every second
+  const countdownInterval = setInterval(() => {
+    const now = new Date().getTime();
+    const timeLeft = unlockDate - now;
+
+    if (timeLeft > 0) {
+      // Calculate remaining time
+      const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+      // Display the countdown
+      countdown.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    } else {
+      // Stop the countdown and unlock the book
+      clearInterval(countdownInterval);
+      lockOverlay.style.display = 'none';
+      bookContainer.style.pointerEvents = 'auto';
+    }
+  }, 1000);
+
+  // Initial lock state check
+  const now = new Date().getTime();
+  if (now < unlockDate) {
+    lockOverlay.style.display = 'flex';
+    bookContainer.style.pointerEvents = 'none'; // Prevent interaction with the book
+  } else {
+    lockOverlay.style.display = 'none';
+    bookContainer.style.pointerEvents = 'auto';
+  }
+};
 
     function showChapter(index) {
       cover.style.display = 'none';
